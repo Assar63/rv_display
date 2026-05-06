@@ -26,6 +26,39 @@ DESPI-C02 BS jumper at **3.3 V**, current-sense switch at **0.47 Ω**
 (typical for 7.5" panels — confirm against the Good Display datasheet
 for your specific revision).
 
+## Prerequisites
+
+The bootstrap (zephyr-bootstrap) handles west, the Python venv, the
+Zephyr SDK, and all the Zephyr Python deps. You bring:
+
+### Linux / macOS
+
+| Tool | Why | Install |
+|------|-----|---------|
+| `bash`, `curl`, `git` | invoking the bootstrap, cloning | preinstalled / `apt install git` / `brew install git` |
+| `python3` + `venv` *(or `uv`)* | the workspace's Python env | `apt install python3-venv` |
+| `openocd` | `west flash` runner (Nucleo ST-Link V3) | `apt install openocd` / `brew install openocd` |
+| `tio` or `picocom` *(optional)* | nicer serial monitor than the `stty + cat` fallback | `apt install tio` / `brew install picocom` |
+
+### Windows (PowerShell)
+
+| Tool | Why | Install |
+|------|-----|---------|
+| PowerShell 5.1+ or 7+ | running the bootstrap | preinstalled / `winget install Microsoft.PowerShell` |
+| `git` | cloning | `winget install Git.Git` |
+| Python 3 *(or `uv`)* | the workspace's Python env | `winget install Python.Python.3` |
+| `7z.exe` | extracting the SDK `.7z` archives during `-Toolchain` | `scoop install 7zip` |
+| `openocd.exe` | `west flash` runner | `scoop install openocd` (or xPack openocd) |
+
+### Hardware
+
+Already covered above — Nucleo-H753ZI + GDEM075F52 + DESPI-C02
+adapter, plus the USB-A → USB-Micro-B cable that came with the Nucleo.
+
+See the full
+[zephyr-bootstrap prerequisites table](https://github.com/Assar63/zephyr-bootstrap#prerequisites)
+for the host-tool details (uv as a faster alternative to pip, etc.).
+
 ## Bootstrap
 
 Set up a fresh workspace from scratch with
@@ -40,9 +73,6 @@ curl -sL https://raw.githubusercontent.com/Assar63/zephyr-bootstrap/main/new-wor
         https://github.com/Assar63/rv_display.git
 ```
 
-You also need **openocd** on `PATH` for flashing — `sudo apt install openocd`
-on Debian/Ubuntu, or `brew install openocd` on macOS.
-
 ### Windows (PowerShell)
 
 ```powershell
@@ -51,12 +81,6 @@ iwr https://raw.githubusercontent.com/Assar63/zephyr-bootstrap/main/new-workspac
     C:\dev\rv_display-workspace `
     https://github.com/Assar63/rv_display.git
 ```
-
-Windows prerequisites on `PATH`:
-
-- **`git`** (Git for Windows or `winget install Git.Git`)
-- **`7z.exe`** (`scoop install 7zip`) — needed for `-Toolchain` to extract the SDK `.7z` assets
-- **`openocd.exe`** (`scoop install openocd`, or download xPack openocd) — for flashing
 
 The PowerShell variant copies `activate.ps1` + `tools\` into the
 workspace rather than symlinking, so it works without Developer Mode.
