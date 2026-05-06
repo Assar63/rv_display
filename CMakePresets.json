@@ -1,0 +1,46 @@
+{
+    "version": 4,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 21,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceParentDir}/build/${presetName}",
+            "environment": {
+                "ZEPHYR_BASE": "${sourceParentDir}/zephyr"
+            }
+        },
+        {
+            "name": "nucleo_h753zi",
+            "displayName": "Nucleo-H753ZI (default)",
+            "inherits": "base",
+            "cacheVariables": {
+                "BOARD": "nucleo_h753zi"
+            }
+        },
+        {
+            "name": "nucleo_h753zi-debug",
+            "displayName": "Nucleo-H753ZI (debug, no opt)",
+            "inherits": "nucleo_h753zi",
+            "cacheVariables": {
+                "CONFIG_DEBUG_OPTIMIZATIONS": "y",
+                "CONFIG_NO_OPTIMIZATIONS": "y"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "nucleo_h753zi",
+            "configurePreset": "nucleo_h753zi"
+        },
+        {
+            "name": "nucleo_h753zi-debug",
+            "configurePreset": "nucleo_h753zi-debug"
+        }
+    ]
+}
