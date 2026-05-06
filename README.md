@@ -29,7 +29,9 @@ for your specific revision).
 ## Bootstrap
 
 Set up a fresh workspace from scratch with
-[zephyr-bootstrap](https://github.com/Assar63/zephyr-bootstrap):
+[zephyr-bootstrap](https://github.com/Assar63/zephyr-bootstrap).
+
+### Linux / macOS (bash)
 
 ```sh
 curl -sL https://raw.githubusercontent.com/Assar63/zephyr-bootstrap/main/new-workspace.sh \
@@ -38,28 +40,49 @@ curl -sL https://raw.githubusercontent.com/Assar63/zephyr-bootstrap/main/new-wor
         https://github.com/Assar63/rv_display.git
 ```
 
-That one command:
+You also need **openocd** on `PATH` for flashing — `sudo apt install openocd`
+on Debian/Ubuntu, or `brew install openocd` on macOS.
 
-1. Creates `~/projects/rv_display-workspace/` and clones this repo into it.
+### Windows (PowerShell)
+
+```powershell
+iwr https://raw.githubusercontent.com/Assar63/zephyr-bootstrap/main/new-workspace.ps1 -OutFile new-workspace.ps1
+.\new-workspace.ps1 -Ide clion -Toolchain arm `
+    C:\dev\rv_display-workspace `
+    https://github.com/Assar63/rv_display.git
+```
+
+Windows prerequisites on `PATH`:
+
+- **`git`** (Git for Windows or `winget install Git.Git`)
+- **`7z.exe`** (`scoop install 7zip`) — needed for `-Toolchain` to extract the SDK `.7z` assets
+- **`openocd.exe`** (`scoop install openocd`, or download xPack openocd) — for flashing
+
+The PowerShell variant copies `activate.ps1` + `tools\` into the
+workspace rather than symlinking, so it works without Developer Mode.
+
+### What the bootstrap does, either way
+
+1. Creates the workspace dir and clones this repo into it.
 2. Sets up an in-tree Python venv (uv if installed, else pip).
 3. Runs `west init -l rv_display` + `west update` (Zephyr `main` plus the
    modules listed in `west.yml`: `cmsis`, `cmsis_6`, `hal_stm32`, `segger`,
    `tinycrypt`, `mbedtls`, `hal_common`, `lvgl`).
-4. Installs the Zephyr SDK (arm-zephyr-eabi only) into `~/zephyr-sdk-<version>/`.
-5. Runs the project's CLion init (drops in run configs).
-6. Symlinks `activate.sh` + `tools/` from the bootstrap repo.
+4. Installs the Zephyr SDK (arm-zephyr-eabi only) into `~/zephyr-sdk-<version>/`
+   (or `%USERPROFILE%\zephyr-sdk-<version>\` on Windows).
+5. Runs the project's CLion init — pins per-workspace `west config`,
+   then prints attach-dir hints from `west list`.
+6. Symlinks (or copies, on Windows) `activate.{sh,ps1}` + `tools/` from
+   the bootstrap repo.
 
-For VSCode: replace `--ide clion` with `--ide vscode`. For Windows
-PowerShell: use `new-workspace.ps1` (see the
-[zephyr-bootstrap README](https://github.com/Assar63/zephyr-bootstrap)
-for syntax).
-
-You also need **openocd** on `PATH` for flashing — `sudo apt install openocd`
-on Debian/Ubuntu, or `brew install openocd` on macOS.
+For VSCode instead of CLion: swap `clion` for `vscode` in the `--ide` /
+`-Ide` argument.
 
 ## Build, flash, monitor
 
 After bootstrap:
+
+### Linux / macOS
 
 ```sh
 cd ~/projects/rv_display-workspace
@@ -67,6 +90,16 @@ source activate.sh
 west build rv_display          # uses west config defaults below
 west flash                     # via openocd
 tools/serial-monitor.sh        # ST-Link VCP, /dev/ttyACM1 @ 115200
+```
+
+### Windows (PowerShell)
+
+```powershell
+cd C:\dev\rv_display-workspace
+. .\activate.ps1
+west build rv_display          # uses west config defaults below
+west flash                     # via openocd
+.\tools\serial-monitor.ps1     # default COM3; override with $env:PORT='COM4'
 ```
 
 The project's IDE init script (run by the bootstrap when `--ide` is passed)
