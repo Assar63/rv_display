@@ -80,6 +80,38 @@ Build artifacts land at `build/rv_display/`. If you bootstrapped without
 `--ide`, you'll need to set those `west config` values yourself (or pass
 `-b nucleo_h753zi` on every `west build`).
 
+## Opening in CLion
+
+Open `<workspace>/rv_display/` as the CLion project (not the workspace
+root) — that's where `CMakePresets.json` and `.idea/runConfigurations/`
+live. CLion will detect the presets automatically; pick `nucleo_h753zi`.
+
+The bootstrap's CLion init prints suggested **"Attach Directory to
+Project"** targets at the end of its output — they're the dirs that
+sit one level up from the project root and aren't auto-visible in
+CLion's Project pane. For this project they are:
+
+| Path                                        | Why                                  |
+|---------------------------------------------|--------------------------------------|
+| `<workspace>/zephyr`                        | Zephyr kernel, drivers, headers, samples |
+| `<workspace>/modules/hal/stm32`             | STM32Cube HAL/LL — peripheral source |
+| `<workspace>/modules/hal/cmsis`             | older Arm CMSIS (still referenced) |
+| `<workspace>/modules/hal/cmsis_6`           | current Arm CMSIS Core/DSP |
+| `<workspace>/modules/lib/gui/lvgl`          | LVGL widget library |
+| `<workspace>/modules/crypto/mbedtls`        | mbedTLS (TLS, hashing, RNG) |
+| `<workspace>/modules/debug/segger`          | SEGGER RTT/SystemView |
+
+To attach: in the Project pane, right-click the project root → **Attach
+Directory to Project** → pick the dir. Or use **File → Attach Directory
+to Project**. CLion stores attached dirs in `.idea/workspace.xml`, which
+is per-user and gitignored, so do this once per machine. `Zephyr` is the
+most useful one to attach first — it puts the entire RTOS source one
+ctrl-click away.
+
+VSCode users get this for free: the bootstrap default vscode-init writes
+a multi-root `.code-workspace` with each module as its own top-level
+folder, so no manual attach step is needed.
+
 ## Project layout
 
 ```
