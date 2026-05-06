@@ -137,6 +137,14 @@ Build artifacts land at `build/rv_display/`. If you bootstrapped without
 `--ide`, you'll need to set those `west config` values yourself (or pass
 `-b nucleo_h753zi` on every `west build`).
 
+> **Heads-up on `pip`:** if the bootstrap used `uv` (the default when
+> `uv` is on `PATH`), the workspace's `.venv` doesn't include `pip` —
+> use `uv pip install <pkg>` instead of `pip install <pkg>`. Nothing
+> in west or Zephyr itself calls `pip` at runtime, so this only matters
+> if a tutorial tells you to. See the
+> [zephyr-bootstrap note on pip vs uv](https://github.com/Assar63/zephyr-bootstrap#heads-up-pip-vs-uv-pip-inside-the-workspace-venv)
+> for details.
+
 ## Opening in CLion
 
 Open `<workspace>/rv_display/` as the CLion project (not the workspace
