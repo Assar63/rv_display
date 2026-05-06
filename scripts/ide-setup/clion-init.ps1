@@ -16,6 +16,15 @@ $ErrorActionPreference = 'Stop'
 $AppDir = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $AppName = Split-Path -Leaf $AppDir
 
+# Pin per-workspace west defaults so `west build`/`west flash` Just Work.
+Push-Location $WorkspaceDir
+try {
+    & west config build.board nucleo_h753zi
+    & west config build.dir-fmt 'build/{app_src}'
+    & west config build.cmake-args -- '-DBOARD_FLASH_RUNNER=openocd -DBOARD_DEBUG_RUNNER=openocd'
+} finally { Pop-Location }
+Write-Host "  west config: board=nucleo_h753zi, dir-fmt=build/{app_src}, runner=openocd"
+
 if (-not (Test-Path (Join-Path $AppDir '.idea\runConfigurations'))) {
     Write-Warning "$AppDir\.idea\runConfigurations\ missing -- did the run configs get committed?"
 }

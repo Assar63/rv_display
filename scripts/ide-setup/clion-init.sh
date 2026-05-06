@@ -10,6 +10,13 @@ WORKSPACE_DIR="$1"
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 APP_NAME="$(basename "$APP_DIR")"
 
+# Pin per-workspace west defaults so `west build`/`west flash` Just Work.
+( cd "$WORKSPACE_DIR" \
+	&& west config build.board nucleo_h753zi \
+	&& west config build.dir-fmt 'build/{app_src}' \
+	&& west config build.cmake-args -- '-DBOARD_FLASH_RUNNER=openocd -DBOARD_DEBUG_RUNNER=openocd' )
+echo "  west config: board=nucleo_h753zi, dir-fmt=build/{app_src}, runner=openocd"
+
 if [ ! -d "$APP_DIR/.idea/runConfigurations" ]; then
 	echo "Warning: $APP_DIR/.idea/runConfigurations/ missing -- did the run configs get committed?" >&2
 fi

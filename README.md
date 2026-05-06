@@ -69,13 +69,16 @@ west flash                     # via openocd
 tools/serial-monitor.sh        # ST-Link VCP, /dev/ttyACM1 @ 115200
 ```
 
-The bootstrap presets these `west config` values for the workspace:
+The project's IDE init script (run by the bootstrap when `--ide` is passed)
+pins these `west config` values for the workspace:
 
 - `build.board=nucleo_h753zi`
 - `build.dir-fmt=build/{app_src}`
 - `build.cmake-args=-DBOARD_FLASH_RUNNER=openocd -DBOARD_DEBUG_RUNNER=openocd`
 
-Build artifacts land at `build/rv_display/`.
+Build artifacts land at `build/rv_display/`. If you bootstrapped without
+`--ide`, you'll need to set those `west config` values yourself (or pass
+`-b nucleo_h753zi` on every `west build`).
 
 ## Project layout
 
@@ -87,6 +90,6 @@ rv_display/
 ├── prj.conf                       CONFIG_DISPLAY / MIPI_DBI / SPI / LOG
 ├── src/main.c                     white / split / black test pattern
 ├── boards/nucleo_h753zi.overlay   SPI1 + e-paper pin mapping
-├── scripts/ide-setup/             project's CLion init (VSCode falls back to bootstrap defaults)
+├── scripts/ide-setup/             project's CLion + VSCode init (sets west config, then delegates)
 └── .idea/runConfigurations/       Flash, OpenOCD GDB Server, Serial Monitor
 ```
