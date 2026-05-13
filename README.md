@@ -145,6 +145,34 @@ Build artifacts land at `build/rv_display/`. If you bootstrapped without
 > [zephyr-bootstrap note on pip vs uv](https://github.com/Assar63/zephyr-bootstrap#heads-up-pip-vs-uv-pip-inside-the-workspace-venv)
 > for details.
 
+## Updating the workspace
+
+Pull updates into an existing workspace via zephyr-bootstrap's
+`update-workspace` script — `git pull` both this repo and the tools
+repo, `west update` to refresh Zephyr + modules to current manifest
+pins, refresh Python deps, and re-arm the pre-commit hook.
+
+### Linux / macOS
+
+```sh
+~/projects/zephyr-bootstrap/update-workspace.sh ~/projects/rv_display-workspace
+```
+
+### Windows (PowerShell)
+
+```powershell
+~\projects\zephyr-bootstrap\update-workspace.ps1 C:\dev\rv_display-workspace
+```
+
+What it does **not** re-run: the project's IDE init script
+(`scripts/ide-setup/<ide>-init.{sh,ps1}`). If this project bumps its
+`west config` defaults or `.idea/runConfigurations/` contents,
+re-run `new-workspace.{sh,ps1}` against the same workspace dir with
+`--ide <name>` instead — every other step skips, only IDE init
+re-runs. See the
+[zephyr-bootstrap update section](https://github.com/Assar63/zephyr-bootstrap#updating-an-existing-workspace)
+for details.
+
 ## Linting / pre-commit
 
 `.pre-commit-config.yaml` runs **clang-format** (Zephyr style via the
@@ -208,8 +236,11 @@ rv_display/
 ├── CMakeLists.txt
 ├── CMakePresets.json              nucleo_h753zi (default), nucleo_h753zi-debug
 ├── prj.conf                       CONFIG_DISPLAY / MIPI_DBI / SPI / LOG
+├── .clang-format                  snapshot of zephyr/.clang-format (Zephyr style)
+├── .pre-commit-config.yaml        clang-format on changed C/C++ files
 ├── src/main.c                     white / split / black test pattern
 ├── boards/nucleo_h753zi.overlay   SPI1 + e-paper pin mapping
 ├── scripts/ide-setup/             project's CLion + VSCode init (sets west config, then delegates)
-└── .idea/runConfigurations/       Flash, OpenOCD GDB Server, Serial Monitor
+├── .idea/runConfigurations/       Flash, OpenOCD GDB Server, Serial Monitor
+└── .github/workflows/lint.yml     CI mirror of the pre-commit hook
 ```
