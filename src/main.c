@@ -5,9 +5,9 @@
 
 LOG_MODULE_REGISTER(rv_display, LOG_LEVEL_INF);
 
-#define EPD_W 800
-#define EPD_H 480
-#define EPD_STRIDE (EPD_W / 8)
+#define EPD_W        800
+#define EPD_H        480
+#define EPD_STRIDE   (EPD_W / 8)
 #define EPD_BUF_SIZE (EPD_STRIDE * EPD_H)
 
 static uint8_t fb[EPD_BUF_SIZE];

@@ -145,6 +145,29 @@ Build artifacts land at `build/rv_display/`. If you bootstrapped without
 > [zephyr-bootstrap note on pip vs uv](https://github.com/Assar63/zephyr-bootstrap#heads-up-pip-vs-uv-pip-inside-the-workspace-venv)
 > for details.
 
+## Linting / pre-commit
+
+`.pre-commit-config.yaml` runs **clang-format** (Zephyr style via the
+in-tree `.clang-format`) on changed C/C++ files. The bootstrap installs
+the `pre-commit` package and runs `pre-commit install` automatically,
+so the hook is already armed after a fresh `new-workspace.{sh,ps1}` run
+— no manual setup. Run the checks manually any time with:
+
+```sh
+pre-commit run --all-files
+```
+
+If you really must skip the hook on a single commit, `git commit
+--no-verify` works — but **the `Lint` GitHub Actions workflow runs the
+same hook on every push/PR**, so anything that slips through locally
+will fail in CI.
+
+Bumping the pinned `clang-format` version:
+
+```sh
+pre-commit autoupdate
+```
+
 ## Opening in CLion
 
 Open `<workspace>/rv_display/` as the CLion project (not the workspace

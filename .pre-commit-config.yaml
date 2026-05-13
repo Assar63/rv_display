@@ -1,0 +1,13 @@
+# Pre-commit hooks for rv_display.
+#
+# Activated automatically by zephyr-bootstrap (`pre-commit install`)
+# on a fresh bootstrap. Mirror runs in GitHub Actions
+# (.github/workflows/lint.yml) on every push / pull request.
+#
+# Bump pinned hook versions with: pre-commit autoupdate
+repos:
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v18.1.8
+    hooks:
+      - id: clang-format
+        types_or: [c, c++]
